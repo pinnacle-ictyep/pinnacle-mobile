@@ -1,5 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:stayinn/screens/search_result_screen.dart';
+import 'package:stayinn/services/provider.dart';
+
+import '../../services/api_service.dart';
 // import 'package:stayinn/widgets/Hotels/most_viewed_widgets.dart';
 // import 'package:stayinn/widgets/Hotels/popular_widgets.dart';
 // import 'package:stayinn/widgets/Hotels/recommended_widget.dart';
@@ -62,6 +67,30 @@ class _HomeScreenState extends State<HomeWidget> with TickerProviderStateMixin {
     "pinprice.png",
   ];
 
+  final String _baseUrl = "https://pinnacle.ictyepprojects.com/api/hotel";
+
+  final String Url = "https://pinnacle.ictyepprojects.com/api/storage/";
+
+  @override
+  void initState() {
+    ApiService().userToken().then((token) {
+      GetDataProvider().getData(_baseUrl, "Bearer $token").then((response) {
+        final Map<String, dynamic> responseDate = json.decode(response.body);
+        print(response.statusCode);
+        if (response.statusCode == 200) {
+          print(responseDate['hotels']);
+          setState(() {
+            for (var element in responseDate['hotels']) {
+              imagesRecommended.add(element['image']);
+            }
+          });
+        }
+        // print(value);
+      });
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     TabController tabController = TabController(length: 3, vsync: this);
@@ -102,41 +131,40 @@ class _HomeScreenState extends State<HomeWidget> with TickerProviderStateMixin {
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(30, 10, 30, 0),
-              child: TextFormField(
-                decoration: InputDecoration(
-                  prefixIcon: Padding(
-                    padding: const EdgeInsets.only(left: 10),
-                    child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: ((context) {
-                                return const SearchResultScreen();
-                              }),
-                            ),
-                          );
-                        },
-                        child: const Icon(Icons.search, size: 50)),
-                  ),
-                  hintText: "Search Hotels",
-                  hintStyle: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0x7f000000),
-                  ),
-                  suffixIcon: const Padding(
-                    padding: EdgeInsets.only(right: 10),
-                    child: Icon(Icons.mic_none_outlined, size: 50),
-                  ),
-                  border: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(30)),
-                  fillColor: const Color(0xFFC4C4C4),
-                  filled: true,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: ((context) {
+                        return const SearchResultScreen();
+                      }),
+                    ),
+                  );
+                },
+                child: const Text(
+                  "Search Hotels",
+                  style: TextStyle(fontSize: 20),
                 ),
               ),
             ),
+
+            // hintText: "Search Hotels",
+            // hintStyle: const TextStyle(
+            //   fontSize: 20,
+            //   fontWeight: FontWeight.w700,
+            //   color: Color(0x7f000000),
+            // ),
+            // suffixIcon: const Padding(
+            //   padding: EdgeInsets.only(right: 10),
+            //   child: Icon(Icons.mic_none_outlined, size: 50),
+            // ),
+            // border: OutlineInputBorder(
+            //     borderSide: BorderSide.none,
+            //     borderRadius: BorderRadius.circular(30)),
+            // fillColor: const Color(0xFFC4C4C4),
+            // filled: true,
+
             const SizedBox(height: 10),
             FittedBox(
               child: SizedBox(

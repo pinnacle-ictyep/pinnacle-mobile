@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:stayinn/screens/booking_screen.dart';
+import 'package:stayinn/screens/home_screen.dart';
+import 'package:stayinn/widgets/search_amaka.dart';
+import 'package:stayinn/widgets/search_kelvino.dart';
+import 'package:stayinn/widgets/search_merridien.dart';
+import 'package:stayinn/widgets/search_rex.dart';
 
 class SearchResultScreen extends StatefulWidget {
   const SearchResultScreen({super.key});
@@ -13,64 +17,67 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 114, 163, 249),
-        centerTitle: true,
-        title: const Text(
-          "Search Results",
-          style: TextStyle(
-              color: Colors.white, fontSize: 24, fontWeight: FontWeight.w700),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 32),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return const BookingScreen();
-                }));
-              },
-              child: Image.asset("assets/images/apright.png"),
-            ),
-          ),
-        ],
-        elevation: 0,
-      ),
       body: SafeArea(
-        child: ListView(
-          //crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 3),
-            const Text("25 hotels available near you",
-                style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xff222AF0))),
-
-            const SizedBox(
-              height: 1,
-            ),
-
-            ListTile(
-              leading: Container(
-                color: Colors.red,
-                height: 400,
-                child: Image.asset(
-                  "assets/images/sp1.png",
-                ),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 30),
+              Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20),
+                    child: GestureDetector(
+                        onTap: () {
+                          Navigator.pushReplacement(context,
+                              MaterialPageRoute(builder: (context) {
+                            return const HomeScreen(selectedindx: 0);
+                          }));
+                        },
+                        child: const Icon(Icons.arrow_back_ios_sharp)),
+                  ),
+                  GestureDetector(
+                    onTap: () {},
+                    child: Container(
+                      height: 50,
+                      width: 200,
+                      padding: const EdgeInsets.all(15),
+                      margin: const EdgeInsets.symmetric(horizontal: 60),
+                      decoration: BoxDecoration(
+                        color: Colors.blueAccent,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Center(
+                        child: Text(
+                          "Search",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                            fontStyle: FontStyle.normal,
+                            color: Color(0xFFFFFFFF),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ),
+              const SizedBox(height: 20),
 
-            // SearchKelvino(),
-            // SizedBox(height: 1),
-            // SearchNikki(),
-            // SizedBox(height: 1),
-            // SearchAmaka(),
-            // SizedBox(height: 1),
-            // SearchMerridien(),
-            // SizedBox(height: 1),
-            // SearchRex(),
-          ],
+              const SizedBox(
+                height: 1,
+              ),
+              const SearchKelvino(),
+              // SizedBox(height: 1),
+              // Nikki(),
+              const SizedBox(height: 1),
+              const SearchAmaka(),
+              const SizedBox(height: 1),
+              const SearchMerridien(),
+              const SizedBox(height: 1),
+              const SearchRex(),
+            ],
+          ),
         ),
       ),
     );

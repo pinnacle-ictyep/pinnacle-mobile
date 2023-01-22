@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stayinn/screens/forgot_password.dart';
-import 'package:stayinn/screens/home_screen.dart';
 import 'package:stayinn/screens/registration_screen.dart';
+import 'package:stayinn/services/auth_service.dart';
 import 'package:stayinn/widgets/const_validator.dart';
 import 'package:stayinn/widgets/my_textfield.dart';
 import 'package:stayinn/widgets/mylogin_button.dart';
@@ -23,6 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool passToggle = true;
 
   bool check = false;
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -98,46 +99,21 @@ class _LoginScreenState extends State<LoginScreen> {
                         return null;
                       }),
                   const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Checkbox(
-                        value: check,
-                        onChanged: (bool? newValue) {
-                          setState(() {
-                            check = true;
-                          });
-                        },
-                      ),
-                      const Text(
-                        "Remember   ",
-                        style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                            fontStyle: FontStyle.normal,
-                            color: Color(0xFF000000)),
-                      ),
-                      Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) {
-                                return const ForgotPasswordScreen();
-                              }));
-                            },
-                            child: const Text(
-                              "  Forgot Password?",
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w700,
-                                  fontStyle: FontStyle.normal,
-                                  color: Colors.blue),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return const ForgotPasswordScreen();
+                      }));
+                    },
+                    child: const Text(
+                      "  Forgot Password?",
+                      style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          fontStyle: FontStyle.normal,
+                          color: Colors.blue),
+                    ),
                   ),
                   const SizedBox(height: 32),
                   Padding(
@@ -183,18 +159,24 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 40),
                   InkWell(
-                    onTap: () {
+                    onTap: () async {
                       if (formKey.currentState!.validate()) {
+                        setState(() => isLoading = true);
                         // print("Accepted");
-                        emailController.clear();
-                        passwordController.clear();
-                        Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context) {
-                          return const HomeScreen(selectedindx: 0);
-                        }));
+                        await AuthService().login(
+                          emailController.text.trim(),
+                          passwordController.text.trim(),
+                          context,
+                        );
+
+                        // emailController.clear();
+                        // passwordController.clear();
+                        setState(() => isLoading = false);
                       }
                     },
-                    child: const MyLoginButton(),
+                    child: isLoading
+                        ? const CircularProgressIndicator.adaptive()
+                        : const MyLoginButton(),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

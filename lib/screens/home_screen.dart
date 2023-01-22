@@ -25,11 +25,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: const Color.fromARGB(255, 114, 163, 249),
+      body: SafeArea(
+        child: _widgetOption[widget.selectedindx],
       ),
-      body: _widgetOption[widget.selectedindx],
+
       // body: SafeArea(
       //   child: ListView(
       //     children: [

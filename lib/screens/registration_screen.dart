@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stayinn/screens/login_screen.dart';
+import 'package:stayinn/services/auth_service.dart';
 import 'package:stayinn/widgets/my_textfield.dart';
 import 'package:stayinn/widgets/mysignup_button.dart';
 
@@ -172,16 +172,22 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 ),
                 const SizedBox(height: 18),
                 InkWell(
-                  onTap: () {
+                  onTap: () async {
                     if (_formfield.currentState!.validate()) {
-                      nameController.clear();
-                      emailController.clear();
-                      phoneNumberController.clear();
-                      passwordController.clear();
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const LoginScreen()));
+                      await AuthService().register(
+                          emailController.text.trim(),
+                          passwordController.text.trim(),
+                          phoneNumberController.text.trim(),
+                          nameController.text.trim(),
+                          context);
+                      // nameController.clear();
+                      // emailController.clear();
+                      // phoneNumberController.clear();
+                      // passwordController.clear();
+                      // Navigator.pushReplacement(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => const LoginScreen()));
                     } else {}
                   },
                   child: const MySignUpButton(),
