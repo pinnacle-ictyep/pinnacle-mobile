@@ -1,9 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:stayinn/models/user_model.dart';
 import 'package:stayinn/services/auth_service.dart';
 import 'package:stayinn/widgets/my_textfield.dart';
 import 'package:stayinn/widgets/mysignup_button.dart';
 
+import '../services/api_service.dart';
+import '../sharedpreference/user_preference.dart';
 import '../widgets/const_validator.dart';
+import 'home_screen.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
@@ -20,6 +26,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final passwordController = TextEditingController();
   final phoneNumberController = TextEditingController();
   bool passToggle = true;
+
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -171,15 +179,66 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   ],
                 ),
                 const SizedBox(height: 18),
-                InkWell(
+             isLoading ?
+             const Center(
+              child: CircularProgressIndicator(),
+             ) :  InkWell(
                   onTap: () async {
+                    setState(() {
+                      isLoading= true;
+                    });
                     if (_formfield.currentState!.validate()) {
-                      await AuthService().register(
-                          emailController.text.trim(),
-                          passwordController.text.trim(),
-                          phoneNumberController.text.trim(),
-                          nameController.text.trim(),
-                          context);
+                      Map<String, String> regData = {
+                        "email": emailController.text,
+                        "password": passwordController.text,
+                        "phone": phoneNumberController.text,
+                        "name": nameController.text
+                      };
+                      print(regData);
+                       ApiService().postData(
+                          "register",
+                          regData,
+                         )
+                          
+                          .then((response) {
+                            final Map<String, dynamic> responseData = json.decode(response.body);
+                            if(response.statusCode == 200){
+                              User user = User(
+                                email: responseData['data']['email'],
+                                id: responseData['data']['id'].toString(),
+                                name: responseData['data']['name'],
+                                phone: responseData['data']['phone'],
+                                token: responseData['token'], confirmPassword: '', password: '', renewalToken: '',
+                                );
+                                
+                                
+                              UserPreference().saveUser(user);
+                              setState(() {
+                      isLoading= false;
+                    });
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) {
+                                      return  const HomeScreen(selectedindx: 0,);
+                                                    },
+                                  )
+                                                  
+                                );
+                            } else{
+                  setState(() {
+                      isLoading= false;
+                    });
+                                var snackbar = SnackBar(content: Text(responseData['errors'].toString()));
+
+                            ScaffoldMessenger.of(context).showSnackBar(snackbar);
+
+                            }
+
+                            print(response.statusCode);  
+                          
+                          }
+        );
                       // nameController.clear();
                       // emailController.clear();
                       // phoneNumberController.clear();
@@ -188,6 +247,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       //     context,
                       //     MaterialPageRoute(
                       //         builder: (context) => const LoginScreen()));
+                     
                     } else {}
                   },
                   child: const MySignUpButton(),

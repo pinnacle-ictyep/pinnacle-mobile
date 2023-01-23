@@ -1,11 +1,23 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:stayinn/screens/home_screen.dart';
 import 'package:stayinn/screens/make_payment.dart';
 import 'package:stayinn/screens/pinnacle_booking.dart';
 import 'package:stayinn/screens/your_booking.dart';
 
+import '../models/get_data.dart';
+import '../sharedpreference/user_preference.dart';
+
 class ConfirmBooking extends StatefulWidget {
-  const ConfirmBooking({super.key});
+  const ConfirmBooking({super.key, required this.hotelName, required this.hotelAddress, required this.roomType, required this.price, required this.hotel_id, required this.room_id});
+  final String hotelName;
+  final String hotelAddress;
+  final String roomType;
+  final String price;
+  final int hotel_id;
+  final int room_id;
 
   @override
   State<ConfirmBooking> createState() => _ConfirmBookingState();
@@ -14,42 +26,32 @@ class ConfirmBooking extends StatefulWidget {
 class _ConfirmBookingState extends State<ConfirmBooking> {
   DateTime date = DateTime.now();
   DateTime datte = DateTime.now();
+ final formKey = GlobalKey<FormState>();
+
+ TextEditingController firsName = new TextEditingController();
+ TextEditingController lastName = new TextEditingController();
+ TextEditingController phone = new TextEditingController();
+ TextEditingController email = new TextEditingController();
+ TextEditingController comment = new TextEditingController();
+
+  final String _baseUrl = "https://pinnacle.ictyepprojects.com/api/booking";
+
+  String name = "";
+ String phone_ = "";
+ String email_ = "";
+bool isLoading = false;
+ @override
+  void initState() {
+    
+
+
+    }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   backgroundColor: const Color.fromARGB(255, 114, 163, 249),
-      //   centerTitle: true,
-      //   title: const Text(
-      //     "Confirm Booking",
-      //     style: TextStyle(
-      //       fontWeight: FontWeight.w500,
-      //     ),
-      //   ),
-      //   actions: [
-      //     Center(
-      //       child: Padding(
-      //         padding: const EdgeInsets.only(right: 10),
-      //         child:
-      // GestureDetector(
-      //           onTap: () {
-      //             Navigator.push(context, MaterialPageRoute(builder: (context) {
-      //               return const HomeScreen(selectedindx: 3);
-      //             }));
-      //           },
-      //           child: const Text(
-      //             "Cancel",
-      //             style: TextStyle(
-      //               fontSize: 17,
-      //               decoration: TextDecoration.underline,
-      //               fontWeight: FontWeight.w500,
-      //             ),
-      //           ),
-      //         ),
-      //       ),
-      //     )
-      //   ],
-      // ),
+     
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -64,7 +66,7 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                         onTap: () {
                           Navigator.pushReplacement(context,
                               MaterialPageRoute(builder: (context) {
-                            return const PinnacleHotelBooking();
+                            return const PinnacleHotelBooking(id: '',);
                           }));
                         },
                         child: const Icon(Icons.arrow_back_ios_sharp)),
@@ -126,23 +128,23 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        "Pinnacle Resorts",
-                        style: TextStyle(
+                       Text(
+                        widget.hotelName,
+                        style: const TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const Text("Asaba, Delta"),
+                       Text(widget.hotelAddress),
                       const Divider(
                         color: Colors.black,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: const [
-                          Text("Room type"),
+                        children:  [
+                         const Text("Room type"),
                           Text(
-                            "One Rex Deluxe",
+                           widget.roomType,
                           ),
                         ],
                       ),
@@ -151,14 +153,14 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: const [
-                          Text(
+                        children:  [
+                         const Text(
                             "Total",
                             style: TextStyle(fontWeight: FontWeight.w600),
                           ),
                           Text(
-                            "₦ 80, 000.00",
-                            style: TextStyle(
+                            "₦${widget.price}",
+                            style: const TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.bold,
                             ),
@@ -274,15 +276,17 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                 const Align(
                   alignment: Alignment.topLeft,
                   child: Text(
-                    "Your Details",
+                    "Info",
                     style: TextStyle(
                       fontSize: 25,
                     ),
                   ),
                 ),
                 const SizedBox(height: 10),
-                Container(
-                  height: 260,
+              //    name == null ? 
+              //    const Center(child:  CircularProgressIndicator())
+                  Container(
+                  height: 80,
                   width: double.infinity,
                   padding: const EdgeInsets.fromLTRB(11, 7, 11, 8),
                   decoration: BoxDecoration(
@@ -290,152 +294,191 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                     color: const Color(0xffffffff),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            height: 40,
-                            width: 60,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                  color:
-                                      const Color.fromARGB(255, 150, 147, 147)),
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
-                                Text(
-                                  "Mr.",
-                                  style: TextStyle(fontSize: 18),
-                                ),
+                  child: Form(
+                    key: formKey,
+                    child: Column(
+                      children: [
+              //          const SizedBox(
+              //             height: 10,
+              //           ),
+              //           SizedBox(
+              //             width: double.infinity,
+              //             height: 40,
+              //             child: TextFormField(
+              //               // initialValue: name.toString(),
+              //               keyboardType: TextInputType.name,
+              //                validator: (value) {
+              //                     if(value!.isEmpty){
+              //                       return "Name cannot be empty";
+              //                     }
+              //                     return null;
+              //                   },
+              //               controller: lastName,
+              //               decoration: InputDecoration(
+              //                 label: const Text("Name"),
+              //                 border: OutlineInputBorder(
+              //                   borderSide: const BorderSide(
+              //                     color: Colors.black,
+              //                   ),
+              //                   borderRadius: BorderRadius.circular(10),
+              //                 ),
+              //               ),
+              //               //    validator: validator,
+              //               // onChanged: onChanged,
+              //             ),
+              //           ),
+              //           const SizedBox(
+              //             height: 10,
+              //           ),
+              //           SizedBox(
+              //             width: double.infinity,
+              //             height: 40,
+              //             child: TextFormField(
+              //               keyboardType: TextInputType.phone,
+              //                validator: (value) {
+              //                     if(value!.isEmpty){
+              //                       return "Phone cannot be empty";
+              //                     }
+              //                     return null;
+              //                   },
+              //               controller: phone,
+              //               decoration: InputDecoration(
+              //                 label: const Text("Phone Number"),
+              //                 border: OutlineInputBorder(
+              //                   borderSide: const BorderSide(
+              //                     color: Colors.black,
+              //                   ),
+              //                   borderRadius: BorderRadius.circular(10),
+              //                 ),
+              //               ),
+              //               //    validator: validator,
+              //               // onChanged: onChanged,
+              //             ),
+              //           ),
+              //           const SizedBox(
+              //             height: 10,
+              //           ),
+              //           SizedBox(
+              //             width: double.infinity,
+              //             height: 40,
+              //             child: TextFormField(
 
-                                // Icon(Icons.arrow_drop_down),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 5),
-                          SizedBox(
-                            width: 260,
-                            height: 40,
-                            child: TextFormField(
-                              keyboardType: TextInputType.name,
-                              // controller: controller,
-                              decoration: InputDecoration(
-                                label: const Text("First Name"),
-                                border: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                    color: Colors.black,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
+              //               keyboardType: TextInputType.emailAddress,
+              //               controller: email,
+              //                validator: (value) {
+              //                     if(value!.isEmpty){
+              //                       return "Email cannot be empty";
+              //                     }
+              //                     return null;
+              //                   },
+              //               decoration: InputDecoration(
+              //                 label: const Text("Email Address"),
+              //                 border: OutlineInputBorder(
+              //                   borderSide: const BorderSide(
+              //                     color: Colors.black,
+              //                   ),
+              //                   borderRadius: BorderRadius.circular(10),
+              //                 ),
+              //               ),
+              //               //    validator: validator,
+              //               // onChanged: onChanged,
+              //             ),
+              //           ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 40,
+                          child: TextFormField(
+                             controller: comment,
+                            keyboardType: TextInputType.multiline,
+                            decoration: InputDecoration(
+                              label: const Text("Enter Additional Comments"),
+                              border: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                  color: Colors.black,
                                 ),
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                              //    validator: validator,
-                              // onChanged: onChanged,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 40,
-                        child: TextFormField(
-                          keyboardType: TextInputType.name,
-                          // controller: controller,
-                          decoration: InputDecoration(
-                            label: const Text("Last Name"),
-                            border: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Colors.black,
-                              ),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          //    validator: validator,
-                          // onChanged: onChanged,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 40,
-                        child: TextFormField(
-                          keyboardType: TextInputType.phone,
-                          // controller: controller,
-                          decoration: InputDecoration(
-                            label: const Text("Phone Number"),
-                            border: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Colors.black,
-                              ),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          //    validator: validator,
-                          // onChanged: onChanged,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 40,
-                        child: TextFormField(
-                          keyboardType: TextInputType.emailAddress,
-                          // controller: controller,
-                          decoration: InputDecoration(
-                            label: const Text("Email Address"),
-                            border: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Colors.black,
-                              ),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          //    validator: validator,
-                          // onChanged: onChanged,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 40,
-                        child: TextFormField(
-                          keyboardType: TextInputType.multiline,
-                          decoration: InputDecoration(
-                            label: const Text("Enter Additional Comments"),
-                            border: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Colors.black,
-                              ),
-                              borderRadius: BorderRadius.circular(10),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
+              ),
                 ),
-                const SizedBox(height: 10),
-                GestureDetector(
+                const SizedBox(height: 30),
+               isLoading ?
+               const Center(child:  CircularProgressIndicator())
+               : GestureDetector(
                   onTap: () {
-                    Navigator.push(
+                    //  if(formKey.currentState!.validate()){
+
+                    //  }
+                     UserPreference().getUser().then((value) {
+      setState(() {
+       
+      //  name = value.name;
+      //   phone_ = value.phone;
+      //    email_ = value.email;
+          isLoading = true;
+      });
+
+         final Map<String, dynamic> data = {
+      "hotel_name": widget.hotelName,
+      "hotel_location": widget.hotelAddress,
+      "roomtype": widget.roomType,
+      "hotel_id": widget.hotel_id,
+      "roomtype_id": widget.room_id,
+      "total": widget.price,
+      "user_id": value.id,
+      "check_in": date.toString(),
+      "check_out": datte.toString(),
+      "name": value.name,
+      "email": value.email,
+      "phone": value.phone,
+      "comment": comment.text
+    };
+
+
+          GetDataProvider().saveData(data, _baseUrl, value.token).then((response){
+
+              var  responseData = json.decode(response.body);
+              print(responseData);
+             if (response.statusCode == 200) {
+                
+        Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) {
-                          return const MakePayment();
+                          return MakePayment(hotelName: widget.hotelName, hotelAddress: widget.hotelAddress, roomType: widget.roomType, 
+                          price: widget.price, hotel_id: widget.hotel_id, room_id: widget.room_id, 
+                          check_in: date.toString(), check_out: datte.toString(), name: value.name, email: value.email, 
+                          phone: value.phone, comment: comment.text);
                         },
                       ),
                     );
+             }else{
+                var snackbar = SnackBar(content: Text(responseData['errors'].toString()));
+
+                ScaffoldMessenger.of(context).showSnackBar(snackbar);
+             }
+
+             setState(() {
+       
+          isLoading = false;
+      });
+
+
+          });
+
+
+      
+
+      
+     });
+                  
                   },
                   child: Container(
                     height: 50,
@@ -459,38 +502,38 @@ class _ConfirmBookingState extends State<ConfirmBooking> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return const YourBooking();
-                        },
-                      ),
-                    );
-                  },
-                  child: Container(
-                    height: 50,
-                    padding: const EdgeInsets.all(15),
-                    margin: const EdgeInsets.symmetric(horizontal: 60),
-                    decoration: BoxDecoration(
-                      color: Colors.blueAccent,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        "RESERVE ROOM",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                          fontStyle: FontStyle.normal,
-                          color: Color(0xFFFFFFFF),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                // GestureDetector(
+                //   onTap: () {
+                //     Navigator.push(
+                //       context,
+                //       MaterialPageRoute(
+                //         builder: (context) {
+                //           return const YourBooking();
+                //         },
+                //       ),
+                //     );
+                //   },
+                //   child: Container(
+                //     height: 50,
+                //     padding: const EdgeInsets.all(15),
+                //     margin: const EdgeInsets.symmetric(horizontal: 60),
+                //     decoration: BoxDecoration(
+                //       color: Colors.blueAccent,
+                //       borderRadius: BorderRadius.circular(10),
+                //     ),
+                //     child: const Center(
+                //       child: Text(
+                //         "RESERVE ROOM",
+                //         style: TextStyle(
+                //           fontSize: 20,
+                //           fontWeight: FontWeight.w700,
+                //           fontStyle: FontStyle.normal,
+                //           color: Color(0xFFFFFFFF),
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),

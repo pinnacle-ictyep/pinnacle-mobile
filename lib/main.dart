@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
         "/OnboardingScreen3": (context) => const OnboardingScreen3(),
         "/LoginScreen": (context) => const LoginScreen(),
         "/HomeScreen": (context) => const HomeScreen(selectedindx: 0),
-        "/PaymentSummary": (context) => const PaymentSummary(),
+        // "/PaymentSummary": (context) => const PaymentSummary(),
       },
     );
   }

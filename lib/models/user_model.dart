@@ -1,5 +1,6 @@
 class User {
-  String name;
+  String id;
+   String name;
   String email;
   String phone;
   String password;
@@ -8,7 +9,9 @@ class User {
   String renewalToken;
 
   User(
-      {required this.name,
+      {
+        required this.id,
+        required this.name,
       required this.email,
       required this.phone,
       required this.password,
@@ -18,6 +21,7 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> responseData) {
     return User(
+        id: responseData['id'],
         name: responseData['name'],
         email: responseData['email'],
         phone: responseData['phone'],

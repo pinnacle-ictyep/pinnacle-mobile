@@ -56,7 +56,7 @@ class _BookingWidgetState extends State<BookingWidget> {
                     context,
                     MaterialPageRoute(
                       builder: (context) {
-                        return const PinnacleHotelBooking();
+                          return const PinnacleHotelBooking(id: "3",);;
                       },
                     ),
                   );
@@ -116,7 +116,7 @@ class _BookingWidgetState extends State<BookingWidget> {
                   context,
                   MaterialPageRoute(
                     builder: (context) {
-                      return const PinnacleHotelBooking();
+                       return const PinnacleHotelBooking(id: "3",);
                     },
                   ),
                 );

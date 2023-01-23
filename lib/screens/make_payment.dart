@@ -1,8 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:stayinn/screens/confirm_booking.dart';
+import 'package:stayinn/screens/payment_summary.dart';
 
 class MakePayment extends StatefulWidget {
-  const MakePayment({super.key});
+  const MakePayment({super.key, required this.hotelName, required this.hotelAddress, required this.roomType, required this.price, required this.hotel_id, required this.room_id, required this.check_in, required this.check_out, required this.name, required this.email, required this.phone, required this.comment});
+
+   final String hotelName;
+  final String hotelAddress;
+  final String roomType;
+  final String price;
+  final int hotel_id;
+  final int room_id;
+  final String check_in;
+  final String check_out;
+  final String name;
+  final String email;
+   final String phone;
+  final String comment;
 
   @override
   State<MakePayment> createState() => _MakePaymentState();
@@ -10,6 +24,14 @@ class MakePayment extends StatefulWidget {
 
 class _MakePaymentState extends State<MakePayment> {
   String? paymentType;
+
+   final _formKey = GlobalKey<FormState>();
+  final TextEditingController name = TextEditingController();
+  final TextEditingController card = TextEditingController();
+  final TextEditingController exdate = TextEditingController();
+  final TextEditingController cvv = TextEditingController();
+  // final TextEditingController phoneNumber = TextEditingController();
+  // final TextEditingController token = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -29,10 +51,11 @@ class _MakePaymentState extends State<MakePayment> {
                   padding: const EdgeInsets.only(left: 20),
                   child: GestureDetector(
                       onTap: () {
-                        Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context) {
-                          return const ConfirmBooking();
-                        }));
+                        Navigator.pop(context);
+                        // Navigator.pushReplacement(context,
+                        //     MaterialPageRoute(builder: (context) {
+                        //   return const ConfirmBooking();
+                        // }));
                       },
                       child: const Icon(Icons.arrow_back_ios_sharp)),
                 ),
@@ -112,136 +135,182 @@ class _MakePaymentState extends State<MakePayment> {
                                       bottom: MediaQuery.of(context)
                                           .viewInsets
                                           .bottom),
-                                  child: SizedBox(
-                                    height: 300,
-                                    child: Column(
-                                      children: [
-                                        const SizedBox(height: 40),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 40, right: 40),
-                                          child: SizedBox(
-                                            height: 40,
-                                            child: TextFormField(
-                                              keyboardType:
-                                                  TextInputType.multiline,
-                                              decoration: InputDecoration(
-                                                label: const Text(
-                                                    "Cardholder Name"),
-                                                border: OutlineInputBorder(
-                                                  borderSide: const BorderSide(
-                                                    color: Colors.black,
+                                  child: Form(
+                                    key: _formKey,
+                                    child: SizedBox(
+                                      height: 300,
+                                      child: Column(
+                                        children: [
+                                          const SizedBox(height: 40),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 40, right: 40),
+                                            child: SizedBox(
+                                              height: 40,
+                                              child: TextFormField(
+                                                controller: name,
+                                                      validator: (value) {
+                                                              if (value!.isEmpty) {
+                                                                return "name required";
+                                                              }
+                                                              return null;
+                                                            },
+                                                keyboardType:
+                                                    TextInputType.multiline,
+                                                decoration: InputDecoration(
+                                                  label: const Text(
+                                                      "Cardholder Name"),
+                                                  border: OutlineInputBorder(
+                                                    borderSide: const BorderSide(
+                                                      color: Colors.black,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(10),
                                                   ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
                                                 ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                        const SizedBox(height: 10),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 40, right: 40),
-                                          child: SizedBox(
-                                            height: 40,
-                                            child: TextFormField(
-                                              keyboardType:
-                                                  TextInputType.number,
-                                              decoration: InputDecoration(
-                                                label:
-                                                    const Text("Card Number"),
-                                                border: OutlineInputBorder(
-                                                  borderSide: const BorderSide(
-                                                    color: Colors.black,
+                                          const SizedBox(height: 10),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 40, right: 40),
+                                            child: SizedBox(
+                                              height: 40,
+                                              child: TextFormField(
+                                                controller: card,
+                                                      validator: (value) {
+                                                              if (value!.isEmpty) {
+                                                                return "Card Number required";
+                                                              }
+                                                              return null;
+                                                            },
+                                                keyboardType:
+                                                    TextInputType.number,
+                                                decoration: InputDecoration(
+                                                  label:
+                                                      const Text("Card Number"),
+                                                  border: OutlineInputBorder(
+                                                    borderSide: const BorderSide(
+                                                      color: Colors.black,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(10),
                                                   ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
                                                 ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                        Row(
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 40, top: 10),
-                                              child: SizedBox(
-                                                width: 200,
-                                                height: 40,
-                                                child: TextFormField(
-                                                  keyboardType:
-                                                      TextInputType.phone,
-                                                  decoration: InputDecoration(
-                                                    label: const Text(
-                                                        "Expiry Date"),
-                                                    border: OutlineInputBorder(
-                                                      borderSide:
-                                                          const BorderSide(
-                                                        color: Colors.black,
+                                          Row(
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 40, top: 10),
+                                                child: SizedBox(
+                                                  width: 200,
+                                                  height: 40,
+                                                  child: TextFormField(
+                                                    controller: exdate,
+                                                          validator: (value) {
+                                                              if (value!.isEmpty) {
+                                                                return "Expiry Date required";
+                                                              }
+                                                              return null;
+                                                            },
+                                                    keyboardType:
+                                                        TextInputType.phone,
+                                                    decoration: InputDecoration(
+                                                      label: const Text(
+                                                          "Expiry Date"),
+                                                      border: OutlineInputBorder(
+                                                        borderSide:
+                                                            const BorderSide(
+                                                          color: Colors.black,
+                                                        ),
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                                10),
                                                       ),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
                                                     ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 30, top: 10),
-                                              child: SizedBox(
-                                                width: 100,
-                                                height: 40,
-                                                child: TextFormField(
-                                                  keyboardType:
-                                                      TextInputType.number,
-                                                  decoration:
-                                                      const InputDecoration(
-                                                    label: Text("CVV"),
-                                                    border: OutlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                        color:
-                                                            Color(0xff00AEFF),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 30, top: 10),
+                                                child: SizedBox(
+                                                  width: 100,
+                                                  height: 40,
+                                                  child: TextFormField(
+                                                    controller: cvv,
+                                                     validator: (value) {
+                                                              if (value!.isEmpty) {
+                                                                return "CVV required";
+                                                              }
+                                                              return null;
+                                                            },
+                                                    keyboardType:
+                                                        TextInputType.number,
+                                                    decoration:
+                                                        const InputDecoration(
+                                                      label: Text("CVV"),
+                                                      border: OutlineInputBorder(
+                                                        borderSide: BorderSide(
+                                                          color:
+                                                              Color(0xff00AEFF),
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 30),
-                                        GestureDetector(
-                                          onTap: () {
-                                            Navigator.pushNamed(
-                                                context, "/PaymentSummary");
-                                          },
-                                          child: Container(
-                                            padding: const EdgeInsets.all(15),
-                                            margin: const EdgeInsets.symmetric(
-                                                horizontal: 60),
-                                            decoration: BoxDecoration(
-                                              color: const Color(0xFF222AF0),
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                            child: const Center(
-                                              child: Text(
-                                                "PAY NOW",
-                                                style: TextStyle(
-                                                  fontSize: 24,
-                                                  fontWeight: FontWeight.w700,
-                                                  fontStyle: FontStyle.normal,
-                                                  color: Color(0xFFFFFFFF),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 30),
+                                          GestureDetector(
+                                            onTap: () {
+                                               if (_formKey.currentState!.validate()) {
+
+                                                        Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) {
+                                                            return PaymentSummary(hotelName: widget.hotelName, hotelAddress: widget.hotelAddress, roomType: widget.roomType, 
+                                                            price: widget.price, hotel_id: widget.hotel_id, room_id: widget.room_id, 
+                                                            check_in: widget.check_in, check_out: widget.check_out, name: widget.name, email: widget.email, 
+                                                            phone: widget.phone, comment: widget.comment);
+                                                          },
+                                                        ),
+                                                      );
+                                               }
+                                                                       
+                                              // Navigator.pushNamed(
+                                              //     context, "/PaymentSummary");
+                                            },
+                                            child: Container(
+                                              padding: const EdgeInsets.all(15),
+                                              margin: const EdgeInsets.symmetric(
+                                                  horizontal: 60),
+                                              decoration: BoxDecoration(
+                                                color: const Color(0xFF222AF0),
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              child: const Center(
+                                                child: Text(
+                                                  "PAY NOW",
+                                                  style: TextStyle(
+                                                    fontSize: 24,
+                                                    fontWeight: FontWeight.w700,
+                                                    fontStyle: FontStyle.normal,
+                                                    color: Color(0xFFFFFFFF),
+                                                  ),
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                        )
-                                      ],
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 );

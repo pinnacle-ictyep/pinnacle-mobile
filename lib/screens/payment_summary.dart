@@ -1,9 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:stayinn/screens/home_screen.dart';
 
-class PaymentSummary extends StatelessWidget {
-  const PaymentSummary({super.key});
+class PaymentSummary extends StatefulWidget {
+  const PaymentSummary({super.key, required this.hotelName, required this.hotelAddress, required this.roomType, required this.price, required this.hotel_id, required this.room_id, required this.check_in, required this.check_out, required this.name, required this.email, required this.phone, required this.comment});
 
+     final String hotelName;
+  final String hotelAddress;
+  final String roomType;
+  final String price;
+  final int hotel_id;
+  final int room_id;
+  final String check_in;
+  final String check_out;
+  final String name;
+  final String email;
+   final String phone;
+  final String comment;
+
+  @override
+  State<PaymentSummary> createState() => _PaymentSummaryState();
+}
+
+class _PaymentSummaryState extends State<PaymentSummary> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,14 +56,14 @@ class PaymentSummary extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        "Pinnacle Resorts",
-                        style: TextStyle(
+                       Text(
+                       widget.hotelName,
+                        style: const TextStyle(
                             fontSize: 16, fontWeight: FontWeight.w700),
                       ),
-                      const Text(
-                        "Asaba, Delta.",
-                        style: TextStyle(fontSize: 18),
+                       Text(
+                       widget.hotelAddress,
+                        style:const TextStyle(fontSize: 18),
                       ),
                       Row(
                         children: [
@@ -72,7 +90,7 @@ class PaymentSummary extends StatelessWidget {
                           const Text("Excellent"),
                         ],
                       ),
-                      const Text("2 Nights  *  1 Adult"),
+                      const Text("1 Nights  *  1 Adult"),
                       const Text(
                         "Booked Successfully",
                         style: TextStyle(fontWeight: FontWeight.w600),
@@ -107,10 +125,10 @@ class PaymentSummary extends StatelessWidget {
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      Text("Room type"),
+                    children:  [
+                     const  Text("Room type"),
                       Text(
-                        "One Rex Deluxe",
+                        widget.roomType,
                       ),
                     ],
                   ),
@@ -119,14 +137,14 @@ class PaymentSummary extends StatelessWidget {
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      Text(
+                    children:  [
+                    const  Text(
                         "You Paid",
                         style: TextStyle(fontWeight: FontWeight.w600),
                       ),
                       Text(
-                        "₦ 80, 000.00",
-                        style: TextStyle(
+                        "₦ ${widget.price}",
+                        style: const TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.bold,
                         ),
@@ -159,8 +177,8 @@ class PaymentSummary extends StatelessWidget {
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text(
+                children:  [
+                 const Text(
                     "Name",
                     style: TextStyle(
                       fontSize: 15,
@@ -168,13 +186,13 @@ class PaymentSummary extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "Tumi Ugo",
-                    style: TextStyle(
+                    widget.name,
+                    style: const TextStyle(
                       fontSize: 15,
                       color: Colors.blueAccent,
                     ),
                   ),
-                  Text(
+                 const Text(
                     "Email",
                     style: TextStyle(
                       fontSize: 15,
@@ -182,22 +200,22 @@ class PaymentSummary extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "tumi.ugo@ictyepprojects.com",
-                    style: TextStyle(
+                    widget.email,
+                    style: const TextStyle(
                       fontSize: 15,
                       color: Colors.blueAccent,
                     ),
                   ),
-                  Text(
+                const  Text(
                     "Phone Number",
-                    style: TextStyle(
+                    style:  TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   Text(
-                    "07030000000",
-                    style: TextStyle(
+                    widget.phone,
+                    style: const TextStyle(
                       fontSize: 15,
                       color: Colors.blueAccent,
                     ),

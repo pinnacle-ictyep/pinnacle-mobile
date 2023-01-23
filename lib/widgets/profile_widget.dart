@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:stayinn/screens/login_screen.dart';
+
+import '../sharedpreference/user_preference.dart';
 
 class Profile extends StatelessWidget {
   final Image image;
@@ -12,7 +15,21 @@ class Profile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return 
+    GestureDetector(
+          onTap: () {
+            UserPreference().removeUser();
+            Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) {
+        return const LoginScreen();
+      },
+    ),
+  );
+          },
+          child:
+          Padding(
       padding: const EdgeInsets.only(left: 45, top: 40),
       child: Row(
         children: [
@@ -25,7 +42,7 @@ class Profile extends StatelessWidget {
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
           ),
         ],
-      ),
+      ),)
     );
   }
 }

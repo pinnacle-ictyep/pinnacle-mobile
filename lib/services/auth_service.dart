@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:stayinn/models/user_model.dart';
 import 'package:stayinn/screens/home_screen.dart';
 import 'package:stayinn/screens/login_screen.dart';
 import 'package:stayinn/services/api_service.dart';
@@ -18,10 +19,18 @@ class AuthService {
       var response = await ApiService().postData("login", data);
       print(response);
       if (response.statusCode == 200) {
-        var body = jsonDecode(response.body);
-        UserPreference().saveUser(body);
+        var responseData = jsonDecode(response.body);
+
+          User user = User(
+                                email: responseData['data']['email'],
+                                id: responseData['data']['id'].toString(),
+                                name: responseData['data']['name'],
+                                phone: responseData['data']['phone'],
+                                token: responseData['token'], confirmPassword: '', password: '', renewalToken: '',
+                                );
+        UserPreference().saveUser(user);
         // StorageService().authToken(body['token']);
-        print(body);
+        // print(body);
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -61,25 +70,29 @@ class AuthService {
       "name": name
     };
     try {
-      var response = await ApiService().postData("register", regData);
-      print(response);
-      if (response.statusCode == 200) {
-        var body = jsonDecode(response.body);
-        UserPreference().saveUser(body);
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) {
-              return const LoginScreen();
-            },
-          ),
-        );
-      } else {
-        var body = jsonDecode(response.body);
-        // print(body);
-      }
+      return await ApiService().postData("register", regData);
+      // print(response.statusCode);
+      // if (response.statusCode == 200) {
+       
+       
+      // } else {
+      //   var body = jsonDecode(response.body);
+      //   // print(body);
+      // }
     } on SocketException {
       //
     }
+  }
+
+  bool checkIfImage(String param) {
+print(param.split('.'));
+if(param.split('.').length == 1){
+  return false;
+}if (param.split('.')[1] == 'jpg' || param.split('.')[1] == 'png' || param.split('.')[1] == 'gif') {
+      return true;
+}else{
+ return false;
+}
+   
   }
 }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 class PinnacleFeatures extends StatefulWidget {
-  const PinnacleFeatures({super.key});
+  const PinnacleFeatures({super.key,  this.hotelsFeatures});
 
+  final dynamic hotelsFeatures;
+  
   @override
   State<PinnacleFeatures> createState() => _PinnacleFeaturesState();
 }
@@ -10,13 +12,14 @@ class PinnacleFeatures extends StatefulWidget {
 class _PinnacleFeaturesState extends State<PinnacleFeatures> {
   @override
   Widget build(BuildContext context) {
+   print(widget.hotelsFeatures);
     return Column(
       children: [
-        const Padding(
-          padding: EdgeInsets.only(right: 120),
+         Padding(
+          padding: const EdgeInsets.only(right: 120),
           child: Text(
-            "Pinnacle Resorts",
-            style: TextStyle(
+            widget.hotelsFeatures["name"],
+            style: const TextStyle(
                 fontSize: 16,
                 color: Color(0xff000000),
                 fontWeight: FontWeight.w400),
@@ -33,11 +36,11 @@ class _PinnacleFeaturesState extends State<PinnacleFeatures> {
                 height: 16.67,
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.only(left: 5.0),
+             Padding(
+              padding: const EdgeInsets.only(left: 5.0),
               child: Text(
-                "Okpanam Road",
-                style: TextStyle(
+                widget.hotelsFeatures["address"],
+                style:const  TextStyle(
                     fontSize: 16,
                     color: Color(0xff000000),
                     fontWeight: FontWeight.w600),
@@ -45,11 +48,11 @@ class _PinnacleFeaturesState extends State<PinnacleFeatures> {
             ),
           ],
         ),
-        const Padding(
-          padding: EdgeInsets.only(right: 140),
+         Padding(
+          padding: const EdgeInsets.only(right: 140),
           child: Text(
-            "₦40,000/ Night",
-            style: TextStyle(
+            widget.hotelsFeatures["price"] + "/Night",
+            style:const  TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
                 color: Color(0xff000000)),
@@ -104,9 +107,9 @@ class _PinnacleFeaturesState extends State<PinnacleFeatures> {
                     constraints: const BoxConstraints(
                       maxWidth: 245,
                     ),
-                    child: const Text(
-                      'Pinnacle Suites is a new spectacular, luxurious and a safe house of peace and tranquility with varied hospitality services and quintessential space for various occasions,',
-                      style: TextStyle(
+                    child:  Text(
+                       widget.hotelsFeatures["description"],
+                      style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w700,
                         height: 1.2,
@@ -231,9 +234,9 @@ class _PinnacleFeaturesState extends State<PinnacleFeatures> {
                 constraints: const BoxConstraints(
                   maxWidth: 245,
                 ),
-                child: const Text(
-                  'Pinnacle Suites is a new spectacular, luxurious and a safe house of peace and tranquility with varied hospitality.',
-                  style: TextStyle(
+                child:  Text(
+                   widget.hotelsFeatures["rules"],
+                  style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
                     color: Color(0xff000000),

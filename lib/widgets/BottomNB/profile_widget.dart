@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stayinn/screens/confirm_booking.dart';
 import 'package:stayinn/screens/edit_profile.dart';
+import 'package:stayinn/sharedpreference/user_preference.dart';
 import 'package:stayinn/widgets/profile_widget.dart';
 
 class ProfileWidget extends StatefulWidget {
@@ -78,14 +79,14 @@ class _ProfileWidgetState extends State<ProfileWidget> {
         ),
         GestureDetector(
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) {
-                  return const ConfirmBooking();
-                },
-              ),
-            );
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(
+            //     builder: (context) {
+            //       return const ConfirmBooking();
+            //     },
+            //   ),
+            // );
           },
           child: Profile(
               text: "Settings",
@@ -102,10 +103,11 @@ class _ProfileWidgetState extends State<ProfileWidget> {
         const SizedBox(
           height: 5,
         ),
-        Profile(
-            text: "Log Out",
-            style: const TextStyle(),
-            image: Image.asset("assets/images/logout.png")),
+         Profile(
+              text: "Log Out",
+              style: const TextStyle(),
+              image: Image.asset("assets/images/logout.png")),
+        
       ],
     );
   }

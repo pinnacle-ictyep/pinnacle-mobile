@@ -67,29 +67,7 @@ class _HomeScreenState extends State<HomeWidget> with TickerProviderStateMixin {
     "pinprice.png",
   ];
 
-  final String _baseUrl = "https://pinnacle.ictyepprojects.com/api/hotel";
-
-  final String Url = "https://pinnacle.ictyepprojects.com/api/storage/";
-
-  @override
-  void initState() {
-    ApiService().userToken().then((token) {
-      GetDataProvider().getData(_baseUrl, "Bearer $token").then((response) {
-        final Map<String, dynamic> responseDate = json.decode(response.body);
-        print(response.statusCode);
-        if (response.statusCode == 200) {
-          print(responseDate['hotels']);
-          setState(() {
-            for (var element in responseDate['hotels']) {
-              imagesRecommended.add(element['image']);
-            }
-          });
-        }
-        // print(value);
-      });
-    });
-    super.initState();
-  }
+  
 
   @override
   Widget build(BuildContext context) {

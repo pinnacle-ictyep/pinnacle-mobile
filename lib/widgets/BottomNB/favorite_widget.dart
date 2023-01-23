@@ -33,7 +33,7 @@ class _FavoriteWidgetState extends State<FavoriteWidget> {
                     context,
                     MaterialPageRoute(
                       builder: (context) {
-                        return const PinnacleHotelBooking();
+                        return const PinnacleHotelBooking(id: "3",);
                       },
                     ),
                   );
